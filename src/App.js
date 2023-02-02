@@ -4,6 +4,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
     return (
@@ -16,7 +17,15 @@ function App() {
                     <div className="w-100" style={{ maxWidth: "400px" }}>
                         <Router>
                             <Routes>
-                                <Route path="/" element={<Dashboard />}></Route>
+                                <Route element={<PrivateRoute />}>
+                                    {/* All the routes that want to be protected  */}
+                                    {/* this is the child / outlet  */}
+                                    <Route
+                                        path="/"
+                                        exact
+                                        element={<Dashboard />}
+                                    />
+                                </Route>
                                 <Route
                                     path="/register"
                                     element={<Register />}
