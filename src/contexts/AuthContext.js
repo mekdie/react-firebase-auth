@@ -8,7 +8,12 @@ export function AuthProvider({ children }) {
     const [user, loading, error] = useAuthState(auth);
 
     function register(email, password) {
-        return auth.createUserWithEmailAndPassword(email, password);
+        return auth
+            .createUserWithEmailAndPassword(email, password)
+            .then((user) => {
+                //signOut immediately after registering user to prevent auto log in
+                auth.signOut();
+            });
     }
 
     //login function
