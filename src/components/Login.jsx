@@ -1,34 +1,31 @@
 import React, { useState, useRef, useContext } from "react";
 import { Alert, Card, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 
-const Register = () => {
+const Login = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
-    const passwordConfirmRef = useRef();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { register } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const { login } = useContext(AuthContext);
 
     async function handleSubmit(e) {
         e.preventDefault();
-
-        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-            //return to stop the function immediately
-            return setError("Passwords do not match");
-        }
 
         //firebase password should be at least 6 characters
         try {
             setError("");
             setLoading(true);
-            await register(emailRef.current.value, passwordRef.current.value);
+            await login(emailRef.current.value, passwordRef.current.value);
+            navigate("/");
         } catch (error) {
             console.log(error);
-            setError("Failed to register an account");
+            setError("Failed to sign in");
         }
 
         setLoading(false);
@@ -38,7 +35,7 @@ const Register = () => {
         <div>
             <Card>
                 <Card.Body>
-                    <h2 className="text-center mb-4">Sign Up</h2>
+                    <h2 className="text-center mb-4">Log in</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" id="email">
@@ -63,30 +60,22 @@ const Register = () => {
                                 placeholder="Enter password here"
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" id="password-confirm">
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                ref={passwordConfirmRef}
-                                required
-                                placeholder="Confirm password here"
-                            />
-                        </Form.Group>
+
                         <Button
                             disabled={loading}
                             className="w-100"
                             type="submit"
                         >
-                            Register
+                            Log in
                         </Button>
                     </Form>
                 </Card.Body>
             </Card>
             <div className="w-100 text-center mt-2">
-                Already have an account? <Link to="/login">Log in </Link>
+                Don't have an account? <Link to="/register">Register </Link>
             </div>
         </div>
     );
 };
 
-export default Register;
+export default Login;
