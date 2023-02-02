@@ -1,17 +1,46 @@
-import React, { useRef } from "react";
-import { Card, Form, Button } from "react-bootstrap";
+import React, { useState, useRef, useContext } from "react";
+import { Alert, Card, Form, Button } from "react-bootstrap";
+import AuthContext from "../contexts/AuthContext";
 
 const Register = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
     const passwordConfirmRef = useRef();
 
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const { register, currentUser } = useContext(AuthContext);
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+            //return to stop the function immediately
+            return setError("Passwords do not match");
+        }
+
+        //firebase password should be at least 6 characters
+        try {
+            setError("");
+            setLoading(true);
+            await register(emailRef.current.value, passwordRef.current.value);
+        } catch (error) {
+            console.log(error);
+            setError("Failed to register an account");
+        }
+
+        setLoading(false);
+    }
+
     return (
         <div>
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Sign Up</h2>
-                    <Form>
+                    {console.log(currentUser)}
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" id="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -43,7 +72,11 @@ const Register = () => {
                                 placeholder="Confirm password here"
                             />
                         </Form.Group>
-                        <Button className="w-100" type="submit">
+                        <Button
+                            disabled={loading}
+                            className="w-100"
+                            type="submit"
+                        >
                             Register
                         </Button>
                     </Form>
