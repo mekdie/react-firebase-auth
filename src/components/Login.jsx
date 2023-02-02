@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { Alert, Card, Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
@@ -12,7 +12,7 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    const { login } = useContext(AuthContext);
+    const { currentUser, login } = useContext(AuthContext);
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -31,6 +31,12 @@ const Login = () => {
         setLoading(false);
     }
 
+    //check if the user has logged in then no need to go to login again, directly direct to dashboard
+    useEffect(() => {
+        if (currentUser) {
+            navigate("/");
+        }
+    }, []);
     return (
         <div>
             <Card>

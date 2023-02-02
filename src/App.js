@@ -18,6 +18,7 @@ function App() {
                         <Router>
                             <Routes>
                                 <Route element={<PrivateRoute />}>
+                                    {/* <Route path="/" element={<Dashboard />}> */}
                                     {/* All the routes that want to be protected  */}
                                     {/* this is the child / outlet  */}
                                     <Route

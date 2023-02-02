@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import { auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const AuthContext = React.createContext();
 
 export function AuthProvider({ children }) {
-    const [currentUser, setCurrentUser] = useState();
-    const [loading, setLoading] = useState(true);
+    const [user, loading, error] = useAuthState(auth);
 
     function register(email, password) {
         return auth.createUserWithEmailAndPassword(email, password);
@@ -21,16 +21,19 @@ export function AuthProvider({ children }) {
         return auth.signOut();
     }
 
-    useEffect(() => {
-        setLoading(false);
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            setCurrentUser(user);
-        });
-        return unsubscribe;
-    }, []);
+    // useEffect(() => {
+    //     setLoading(false);
+    //     const unsubscribe = auth.onAuthStateChanged((user) => {
+    //         setCurrentUser(user);
+    //     });
+    //     if (!currentUser) {
+    //         setCurrentUser(auth);
+    //     }
+    //     return unsubscribe;
+    // }, []);
 
     const value = {
-        currentUser,
+        currentUser: user,
         login,
         register,
         logout,
