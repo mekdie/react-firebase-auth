@@ -52,10 +52,10 @@ const Login = () => {
                                 required
                                 placeholder="Enter email here"
                             />
-                            <Form.Text className="text-muted">
+                            {/* <Form.Text className="text-muted">
                                 The app will never share your email with anyone
                                 else.
-                            </Form.Text>
+                            </Form.Text> */}
                         </Form.Group>
                         <Form.Group className="mb-3" id="password">
                             <Form.Label>Password</Form.Label>
