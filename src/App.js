@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import Forgot from "./components/Forgot";
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function App() {
                                     path="/login"
                                     element={<Login />}
                                 ></Route>
+                                <Route path="/forgot" element={<Forgot />} />
                             </Routes>
                         </Router>
                     </div>
