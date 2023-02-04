@@ -28,7 +28,11 @@ const Register = () => {
             await register(emailRef.current.value, passwordRef.current.value);
         } catch (error) {
             console.log(error);
-            setError("Failed to register an account");
+            if (passwordRef.current.value.length < 6) {
+                setError("Password needs to be at least 6 characters");
+            } else {
+                setError("Failed to register an account");
+            }
         }
 
         setLoading(false);
