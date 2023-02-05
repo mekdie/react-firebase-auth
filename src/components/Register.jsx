@@ -1,12 +1,13 @@
 import React, { useState, useRef, useContext } from "react";
 import { Alert, Card, Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 
 const Register = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
     const passwordConfirmRef = useRef();
+    const navigate = useNavigate();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -26,6 +27,13 @@ const Register = () => {
             setError("");
             setLoading(true);
             await register(emailRef.current.value, passwordRef.current.value);
+            //redirect to login
+            navigate("/login", {
+                state: {
+                    message:
+                        "You can now log in with your newly created account",
+                },
+            });
         } catch (error) {
             console.log(error);
             if (passwordRef.current.value.length < 6) {

@@ -1,16 +1,19 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { Alert, Card, Form, Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 
 const Login = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
+    const trigger = useRef();
 
+    const [message, setMessage] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const { state } = useLocation();
 
     const { currentUser, login } = useContext(AuthContext);
 
@@ -36,12 +39,19 @@ const Login = () => {
         if (currentUser) {
             navigate("/");
         }
+        if (state) {
+            console.log(state.message);
+            trigger.current.click();
+            setMessage(state.message);
+        }
     }, []);
     return (
         <div>
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Log in</h2>
+                    {console.log(message)}
+                    {message && <Alert variant="success">{message}</Alert>}
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" id="email">
@@ -80,6 +90,13 @@ const Login = () => {
                     </div>
                 </Card.Body>
             </Card>
+            <button
+                hidden
+                ref={trigger}
+                onClick={() => setMessage(state.message)}
+            >
+                click
+            </button>
             <div className="w-100 text-center mt-2">
                 Don't have an account? <Link to="/register">Register </Link>
             </div>
