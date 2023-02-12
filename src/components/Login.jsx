@@ -6,14 +6,13 @@ import AuthContext from "../contexts/AuthContext";
 const Login = () => {
     const emailRef = useRef();
     const passwordRef = useRef();
-    const trigger = useRef();
 
-    const [message, setMessage] = useState("");
+    const location = useLocation();
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
-    const { state } = useLocation();
 
     const { currentUser, login } = useContext(AuthContext);
 
@@ -27,31 +26,41 @@ const Login = () => {
             await login(emailRef.current.value, passwordRef.current.value);
             navigate("/");
         } catch (error) {
-            console.log(error);
-            setError("Failed to sign in");
+            // console.log(error.code);
+            if (error.code === "auth/wrong-password") {
+                setError(
+                    "Wrong password. Please try again or reset your password"
+                );
+            } else {
+                setError("Failed to sign in");
+            }
         }
 
         setLoading(false);
     }
 
     //check if the user has logged in then no need to go to login again, directly direct to dashboard
-    useEffect(() => {
-        if (currentUser) {
-            navigate("/");
-        }
-        if (state) {
-            console.log(state.message);
-            trigger.current.click();
-            setMessage(state.message);
-        }
-    }, []);
+
+    //BUG: this useEffect is causing unnecessary re-renders causing the second render doesn't have the desired values (e.g. state from locations after registering to show message)
+
+    //BUG 2: removing this solves an issue, but if we refresh the current page, the message will not disappear
+
+    // useEffect(() => {
+    //     if (currentUser) {
+    //         navigate("/");
+    //     }
+    // }, [currentUser, navigate]);
+
     return (
         <div>
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Log in</h2>
-                    {console.log(message)}
-                    {message && <Alert variant="success">{message}</Alert>}
+                    {location.state && (
+                        <Alert variant="success">
+                            {location.state.message}
+                        </Alert>
+                    )}
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" id="email">
@@ -90,13 +99,6 @@ const Login = () => {
                     </div>
                 </Card.Body>
             </Card>
-            <button
-                hidden
-                ref={trigger}
-                onClick={() => setMessage(state.message)}
-            >
-                click
-            </button>
             <div className="w-100 text-center mt-2">
                 Don't have an account? <Link to="/register">Register </Link>
             </div>

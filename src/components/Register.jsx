@@ -30,13 +30,17 @@ const Register = () => {
             //redirect to login
             navigate("/login", {
                 state: {
-                    message:
-                        "You can now log in with your newly created account",
+                    message: "You can now login with your created account",
                 },
             });
         } catch (error) {
             console.log(error);
-            if (passwordRef.current.value.length < 6) {
+            if (error.code === "auth/email-already-in-use") {
+                setError("Email has already been registered.");
+            } else if (
+                error.code === "auth/weak-password" &&
+                passwordRef.current.value.length < 6
+            ) {
                 setError("Password needs to be at least 6 characters");
             } else {
                 setError("Failed to register an account");
