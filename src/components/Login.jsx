@@ -16,6 +16,9 @@ const Login = () => {
 
     const { currentUser, login } = useContext(AuthContext);
 
+    //message state
+    const [postRegMsg, setPostRegMsg] = useState("");
+
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -45,21 +48,35 @@ const Login = () => {
 
     //BUG 2: removing this solves an issue, but if we refresh the current page, the message will not disappear
 
-    // useEffect(() => {
-    //     if (currentUser) {
-    //         navigate("/");
-    //     }
-    // }, [currentUser, navigate]);
+    useEffect(() => {
+        if (currentUser) {
+            navigate("/");
+        }
+
+        //set the post registMsg if only it's empty (for now)
+        const storedMsg = localStorage.getItem("postRegMsg");
+
+        if (storedMsg) {
+            setPostRegMsg(storedMsg);
+
+            //set timeout to delay the removing message after registration
+            setTimeout(() => {
+                localStorage.removeItem("postRegMsg");
+            }, 1000);
+        } else {
+            if (location.state) {
+                localStorage.setItem("postRegMsg", location.state.message);
+            }
+        }
+    }, []);
 
     return (
         <div>
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Log in</h2>
-                    {location.state && (
-                        <Alert variant="success">
-                            {location.state.message}
-                        </Alert>
+                    {postRegMsg && (
+                        <Alert variant="success">{postRegMsg}</Alert>
                     )}
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
